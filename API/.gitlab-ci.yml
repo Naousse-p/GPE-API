@@ -1,0 +1,160 @@
+# Liste des différentes étapes de la pipeline
+stages:
+  - build
+  - test
+  - publish
+  - deploy
+
+services:
+  - docker:dind
+
+# Construire l'image rabbitmq
+build_rabbitmq:
+  stage: build
+  script:
+    - cd API
+    - echo "Delete docker run rabbitmq container"
+    - docker rm -f rabbitmq || true
+    - echo "Starting Rabbitmq container from docker-compose2.yml"
+    - docker-compose -f docker-compose2.yml up -d rabbitmq
+    - docker ps
+    - CONTAINER_ID=$(docker ps -aqf "name=rabbitmq")
+    - echo "container id :" $CONTAINER_ID
+    - echo "logs"
+    - docker logs $CONTAINER_ID
+    - echo "status"
+    - docker inspect --format='{{.State.Status}}' $CONTAINER_ID
+
+# Construire l'image back avec la db
+build_api:
+  stage: build
+  script:
+    - cd API
+    - echo "Delete docker run backend container"
+    - docker rm -f back-api || true
+    - echo "Docker build backend image"
+    - docker build -t back:latest -f Dockerfile .
+    - echo "images"
+    - docker images
+    - docker ps
+    - echo "Running backend container"
+    - docker run -d -p 5050:5050 --name back-api back:latest
+    - docker ps
+    - CONTAINER_ID=$(docker ps -aqf "name= back-api")
+    - echo "container id :" $CONTAINER_ID
+    - echo "logs"
+    - docker logs $CONTAINER_ID
+    - echo "status"
+    - docker inspect --format='{{.State.Status}}' $CONTAINER_ID
+
+# Construire l'image front
+build_front:
+  stage: build
+  script:
+    - cd front
+    - echo "Delete docker run front container"
+    - docker rm -f front || true
+    - echo "Docker build frontend image"
+    - docker build -t front:latest -f Dockerfile .
+    - echo "images"
+    - docker images
+    - docker ps
+    - echo "Running frontend container"
+    - docker run -d -p 3000:3000 --name front front:latest
+    - docker ps
+    - CONTAINER_ID=$(docker ps -aqf "name= front")
+    - echo "container id :" $CONTAINER_ID
+    - echo "logs"
+    - docker logs $CONTAINER_ID
+    - echo "status"
+    - docker inspect --format='{{.State.Status}}' $CONTAINER_ID
+
+# Exécuter les tests unitaires
+unit_tests:
+  stage: test
+  script:
+    - CONTAINER_ID=$(docker ps -aqf "name= back-api")
+    - echo "container id :" $CONTAINER_ID
+    - docker exec $CONTAINER_ID ls
+    - docker logs $CONTAINER_ID
+    - echo "status"
+    - docker inspect --format='{{.State.Status}}' $CONTAINER_ID
+    - echo "exec tests unitaires 1"
+    - docker exec $CONTAINER_ID npm run test:unit
+    - echo "exec tests unitaires 2"
+    - docker exec $CONTAINER_ID npm run test:unit2
+
+# Exécuter les tests fonctionnels
+functional_tests:
+  stage: test
+  script:
+    - CONTAINER_ID=$(docker ps -aqf "name= back-api")
+    - echo "container id :" $CONTAINER_ID
+    - echo "logs"
+    - docker logs $CONTAINER_ID
+    - echo "status"
+    - docker inspect --format='{{.State.Status}}' $CONTAINER_ID
+    - echo "exec tests functionnels 1"
+    - docker exec $CONTAINER_ID npm run test:functional
+    - echo "exec tests functionnels 2"
+    - docker exec $CONTAINER_ID npm run test:functional2
+
+# Publier l'image rabbitmq sur le docker hub
+publish_rabbitmq:
+  stage: publish
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker tag rabbitmq:latest $DOCKER_USERNAME/rabbitmq:latest
+    - docker push $DOCKER_USERNAME/rabbitmq:latest
+
+# Publier l'image back sur le docker hub
+publish_back:
+  stage: publish
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker tag back:latest $DOCKER_USERNAME/back:latest
+    - docker push $DOCKER_USERNAME/back:latest
+
+# Publier l'image front sur le docker hub
+publish_front:
+  stage: publish
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker tag front:latest $DOCKER_USERNAME/front:latest
+    - docker push $DOCKER_USERNAME/front:latest
+
+# Déployer les images build et publish sur le serveur de production
+deploy_to_server:
+  stage: deploy
+  script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan $SSH_IP >> ~/.ssh/known_hosts
+    - ssh $SSH_USER@$SSH_IP "
+      echo 'Pulling images...';
+      docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
+      docker pull $DOCKER_USERNAME/back:latest;
+      docker pull $DOCKER_USERNAME/front:latest;
+      docker pull $DOCKER_USERNAME/rabbitmq:latest;
+
+      echo 'Stopping and removing old containers';
+      docker stop back-api || true && docker rm back-api || true;
+      docker stop front || true && docker rm front || true;
+      docker stop rabbitmq || true && docker rm rabbitmq || true;
+
+      echo 'Running new containers';
+      docker run -d -p 5050:5050 --name back-api $DOCKER_USERNAME/back:latest;
+      docker run -d -p 3000:3000 --name front $DOCKER_USERNAME/front:latest;
+      docker run -d -p 5672:5672 --name rabbitmq $DOCKER_USERNAME/rabbitmq:latest;
+
+      echo 'Listing running containers...';
+      docker ps;
+
+      sleep 20;
+
+      echo 'Configuring RabbitMQ...';
+      docker exec rabbitmq rabbitmqctl add_user $RABBITMQ_USERNAME $RABBITMQ_PASSWORD;
+      docker exec rabbitmq rabbitmqctl set_user_tags $RABBITMQ_USERNAME administrator;
+      docker exec rabbitmq rabbitmqctl set_permissions -p / $RABBITMQ_USERNAME \".*\" \".*\" \".*\";
+      "

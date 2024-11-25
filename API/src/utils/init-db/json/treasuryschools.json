@@ -1,0 +1,1 @@
+[{"_id":{"$oid":"66e1f4801cd34e6a1c6b4342"},"school":{"$oid":"66d97f2c12abb2fb62c89ca8"},"cooperativeBudget":1019,"transactions":[{"$oid":"66eb00d3ad92a532a3179a2d"},{"$oid":"66eb01b96b494d5f58cde0c7"},{"$oid":"66eb15515d29dd5658506abf"},{"$oid":"66eb34df20d1a70279d3b9c5"}],"createdAt":{"$date":"2024-09-11T19:50:24.775Z"},"updatedAt":{"$date":"2024-09-18T20:15:27.693Z"},"__v":7}]

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Carnet de suivi des apprentissage</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .page {
+        page-break-after: always;
+        height: 100% !important;
+        margin: 0;
+        padding: 0;
+      }
+      .new-page {
+        margin-top: 45px;
+      }
+      .cover-page {
+        height: 100%;
+      }
+      .test {
+        background-color: #264152;
+      }
+
+      .cover {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+      }
+
+      .cover-page-img {
+        background-image: url(${coverImage});
+      }
+      .studentName {
+        font-family: "Dancing Script", cursive;
+        font-size: 2.5em;
+        margin-top: -4%;
+        color: #423c3c;
+      }
+
+      .left-bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        margin: 10px;
+        color: #264152;
+      }
+
+      .acquerir-les-premiers-outils {
+        background-image: url(${premierOutilCover});
+      }
+
+      .agir-exprimer-activite-artistique {
+        background-image: url(${activiteArtistiqueCover});
+      }
+      .agir-exprimer-comprendre {
+        background-image: url(${agirExprimerCover});
+      }
+
+      .apprendre-ensemble {
+        background-image: url(${apprendreEnsembleCover});
+      }
+      .explorer-le-monde {
+        background-image: url(${explorerLeMondeCover});
+      }
+
+      .mobiliser-le-langage {
+        background-image: url(${MobiliserLangageCover});
+      }
+
+      .grid-container-12 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, auto);
+        width: 100%;
+        height: 100%;
+        padding: 50px;
+        gap: 10px;
+        box-sizing: border-box;
+      }
+
+      .grid-item {
+        display: inline-block;
+        max-height: 250px; /* Hauteur minimale pour les éléments de la grille */
+      }
+
+      .grid-item img {
+        width: 100%; /* Taille fixe pour les images */
+        height: 100%; /* Taille fixe pour les images */
+        object-fit: contain;
+      }
+
+      .m {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+      }
+
+      .month-label {
+        grid-column: span 3;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 1.5em;
+      }
+
+      .appreciation-card {
+        margin-top: 30px;
+        width: 90%; /* Occuper toute la largeur de la page avec une petite marge */
+        padding: 20px; /* Ajouter du padding pour l'intérieur de la carte */
+        border: 2px solid #ccc; /* Bordure de la carte */
+        border-radius: 8px; /* Coins arrondis pour la carte */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ajouter une ombre pour l'effet de carte */
+        box-sizing: border-box;
+        text-align: center;
+      }
+      .appreciation-page {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .appreciation-title {
+        margin-top: 40px;
+        font-size: 1.8em;
+        font-weight: bold;
+        margin-bottom: 16px;
+        color: #333;
+        text-align: center; /* Centrer le texte horizontalement */
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .appreciation-date {
+        font-size: 1em;
+        color: #666;
+        margin-bottom: 16px;
+        text-align: right;
+      }
+
+      .appreciation-card p {
+        font-size: 1.2em;
+        line-height: 1.6;
+        color: #333;
+        text-align: left;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page cover-page">
+      <div class="cover cover-page-img" alt="Test Image" />
+      <h1 class="studentName">${studentData.firstname} ${studentData.lastname}</h1>
+    </div>
+
+    <div class="page cover-page">
+      <div class="cover acquerir-les-premiers-outils" alt="Test Image" />
+    </div>
+
+    <div class="page cover-page">
+      <div class="cover agir-exprimer-activite-artistique" alt="Test Image" />
+    </div>
+
+    <div class="page cover-page">
+      <div class="cover agir-exprimer-comprendre" alt="Test Image" />
+    </div>
+
+    <div class="page cover-page">
+      <div class="cover apprendre-ensemble" alt="Test Image" />
+    </div>
+
+    <div class="page cover-page">
+      <div class="cover explorer-le-monde" alt="Test Image" />
+    </div>
+
+    <div class="page cover-page">
+      <div class="cover mobiliser-le-langage" alt="Test Image" />
+    </div>
+
+    ${grille3By4}
+  </body>
+</html>

@@ -1,0 +1,54 @@
+[
+  {
+    "_id": { "$oid": "66eb00d3ad92a532a3179a2d" },
+    "type": "collection",
+    "title": "Kermesse",
+    "amount": 583,
+    "date": { "$date": "2024-09-18T16:33:23.898Z" },
+    "status": "pending",
+    "receipts": null,
+    "schoolTreasury": { "$oid": "66d97f2c12abb2fb62c89ca8" },
+    "createdAt": { "$date": "2024-09-18T16:33:23.899Z" },
+    "updatedAt": { "$date": "2024-09-18T16:33:23.899Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "66eb01b96b494d5f58cde0c7" },
+    "type": "collection",
+    "title": "Bourse aux livres",
+    "amount": 106,
+    "date": { "$date": "2024-09-18T16:37:13.796Z" },
+    "status": "pending",
+    "receipts": null,
+    "schoolTreasury": { "$oid": "66d97f2c12abb2fb62c89ca8" },
+    "createdAt": { "$date": "2024-09-18T16:37:13.807Z" },
+    "updatedAt": { "$date": "2024-09-18T16:37:13.807Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "66eb15515d29dd5658506abf" },
+    "type": "purchase",
+    "title": "Jeux récréation",
+    "amount": 100,
+    "date": { "$date": "2024-09-18T18:00:49.561Z" },
+    "status": "pending",
+    "receipts": "66eb15515d29dd5658506abf_1726682449569_source.png",
+    "schoolTreasury": { "$oid": "66e1f4801cd34e6a1c6b4342" },
+    "createdAt": { "$date": "2024-09-18T18:00:49.562Z" },
+    "updatedAt": { "$date": "2024-09-18T18:00:49.569Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "66eb34df20d1a70279d3b9c5" },
+    "type": "collection",
+    "title": "Photo de classe",
+    "amount": 180,
+    "date": { "$date": "2024-09-18T20:15:27.677Z" },
+    "status": "pending",
+    "classTreasury": { "$oid": "66d9b9fb107b6b96337e48e0" },
+    "schoolTreasury": { "$oid": "66d97f2c12abb2fb62c89ca8" },
+    "createdAt": { "$date": "2024-09-18T20:15:27.68Z" },
+    "updatedAt": { "$date": "2024-09-18T20:15:27.68Z" },
+    "__v": 0
+  }
+]
